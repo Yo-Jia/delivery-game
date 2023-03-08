@@ -1,8 +1,8 @@
-# Kraken Brigade
+# Delivery Man
 
 ## Description
 
-delivery is a transport simulation game where the player takes on the role of a DHL transporter driver. The player's objective is to load the packages onto the transporter by dragging and dropping them from the conveyor belt onto the transporter. Once the transporter is fully loaded, it will depart and the player will earn points. However, if the conveyor belt becomes overloaded with packages, the game will end. 
+Delivery Man is a transport simulation game where the player takes on the role of a DHL transporter driver. The player's objective is to load the packages onto the transporter by dragging and dropping them from the conveyor belt onto the transporter. Once the transporter is fully loaded, it will depart and the player will earn points. However, if the conveyor belt becomes overloaded with packages, the game will end.
 
 ## MVP (DOM - CANVAS)
 
@@ -38,7 +38,7 @@ delivery is a transport simulation game where the player takes on the role of a 
 - drawCanvas () {}
 - GameOver () {}
 
-# ship.js 
+# ship.js
 
 - Ship () {
     this.x;
@@ -51,7 +51,7 @@ delivery is a transport simulation game where the player takes on the role of a 
 - shoot () {}
 - checkScreenCollision () {}
 
-# tentacle.js 
+# tentacle.js
 
 - Tentacle () {
     this.x;
@@ -63,7 +63,7 @@ delivery is a transport simulation game where the player takes on the role of a 
 - move () {}
 - checkCollisionBotton () {}
 
-# cannonball.js 
+# cannonball.js
 
 - Cannonball () {
     this.x;
