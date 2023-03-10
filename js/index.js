@@ -5,7 +5,9 @@ let x
 let y
 let w
 let h
-
+let randomArrW = 0 
+let randomText = ""
+let stringArr = []
 
 const packages = [
   {
@@ -50,40 +52,42 @@ const packages = [
     w: 50,
     h: 100
   },
-  {
-    name: "L shape",
-    x: 0,
-    y: 0,
-    w: 50,
-    h: 100,
-    secX:  + 50,
-    secY:  + 50,
-    secW: 50,
-    secH: 50
-  },
-  {
-    name: "L shape reverse",
-    x: 0,
-    y: 0,
-    w: 50,
-    h: 100,
-    secX:  - 50,
-    secY:  + 50,
-    secW: 50,
-    secH: 50
-  },
+  // {
+  //   name: "L shape",
+  //   x: 0,
+  //   y: 0,
+  //   w: 50,
+  //   h: 100,
+  //   secX:  + 50,
+  //   secY:  + 50,
+  //   secW: 50,
+  //   secH: 50
+  // },
+  // {
+  //   name: "L shape reverse",
+  //   x: 0,
+  //   y: 0,
+  //   w: 50,
+  //   h: 100,
+  //   secX:  - 50,
+  //   secY:  + 50,
+  //   secW: 50,
+  //   secH: 50
+  // },
   
   
 ]
 
 setInterval(() => {
-  randomPackage(packages)
+  randomPackage(packages);
+
 }, 5000); 
+
+
 
 function setup() {
     createCanvas(windowWidth-5, windowHeight-5);
     setInterval(moveBelt, 10);
-
   }
   
   function windowResized() {
@@ -144,10 +148,23 @@ function setup() {
       fill(150);
     }
 
+    //make package stop
+    for (let i = 0; i < randomARR.length; i++) {
+      for (let j = i + 1; j < randomARR.length; j++) {
+        const packageA = randomARR[i];
+        const packageB = randomARR[j];
+        if (packagesOverlap(packageA, packageB)) {
+          packageA.speed = 0;
+          packageB.speed = 0;
+        }
+      }
+    }
+
     //draw packages
-    randomARR.forEach((package)=>{
-      
-      if(package.secH == undefined){
+    randomARR.forEach((package,i)=>{
+      package.y = height - package.h - 75
+      // package.secY = height - package.secH - 75
+      // if(package.secH == undefined){
       //box      
       stroke(100);
       strokeWeight(10);
@@ -157,40 +174,49 @@ function setup() {
       stroke(250);
       strokeWeight(10);
       drawTape(package.x,package.y,package.w,package.h)
-      //sticker
-      
-      fill(100)
-      rect(package.x + package.w - 15,package.y + 15, 10, 10)
+     
+      //sticker 
+      stroke(300)
+      fill(300)
+      rect(package.x + 15,package.y + 20, package.w - 20, 15)
 
-      }else{
-      //L shape box
-      stroke(100);
-      fill(100)
-      rect(package.x, package.y, package.w, package.h) 
+      //text in sticker
+      fill(0);
+      textSize(12);
+      text(stringArr[i], package.x + 20, package.y + 30);
 
-      fill(100)
-      rect(package.secX, package.secY, package.secW, package.secH)
 
-      //sticker
-      fill(100)
-      rect(package.x + package.w - 15,package.y + package.h -15, 10, 10)
+      // fill(0)
+      // textAlign(LEFT, TOP)
+      // text(text, package.x + 20, package.y + 22)
 
-      }
+
+      // }else{
+      // //L shape box
+      // stroke(100);
+      // fill(100)
+      // rect(package.x, package.y, package.w, package.h) 
+
+      // fill(100)
+      // rect(package.secX, package.secY, package.secW, package.secH)
+
+      // //sticker
+      // fill(100)
+      // rect(package.x + package.w - 15,package.y + package.h -15, 10, 10)
+
+      // }
       package.x += package.speed
       package.secX += package.speed
-
-          // stop package if it reaches right side of screen
-    if (package.x + package.w > width - 20) {
-      package.speed = 0;
       
-      // stack package on top of previous package
- 
-    }
+      if (package.x + package.w >width - 20) {
+      package.speed = 0;
+      }
+
+      
     
 
-      // if()
-      // package.x += beltSpeed
-      // package.secX += beltSpeed
+    
+      
 
       // if (package.x -  package.w > windowWidth) {
       //   package.x = 0;
@@ -199,6 +225,13 @@ function setup() {
 
   }
 
+  // randomARR.forEach((package)=>{
+  //   console.log("package",package.w)
+  //   console.log("Arr",randomArrW)
+  //   if(package.speed == 0){
+  //     randomArrW += package.w
+  //   }
+  //   })
 
 
    
@@ -253,7 +286,7 @@ function drawTape(x,y,w,h){
   else{line(x + w / 2, y, x + w / 2, y + h)}
 }
 function drawSticker(x,y,w,h){
-  return rect(x + random(0, w - 15),y + random(0, h - 15), 10, 10)
+  return rect(x + random(0, w - 20),y + random(0, h - 20), 15, 15)
 
 }
 function randomSticker(){
@@ -264,17 +297,40 @@ function randomSticker(){
 
 
 function randomPackage(packagesArr){
-  let i = Math.floor(Math.random() * 8)
+  let i = Math.floor(Math.random() * 6)
   let x = packagesArr[i].x
   let y = packagesArr[i].y
   let w = packagesArr[i].w
   let h = packagesArr[i].h
-  let secX = packagesArr[i].secX
-  let secY = packagesArr[i].secY
-  let secW = packagesArr[i].secW
-  let secH = packagesArr[i].secH
-  let speed = 2
+  
+  // let secX = packagesArr[i].secX
+  // let secY = packagesArr[i].secY
+  // let secW = packagesArr[i].secW
+  // let secH = packagesArr[i].secH
+  let speed = 13
+  packagesArr.forEach(()=>{ generateRandomString(w - 40)})
+ 
   if(i < 6){randomARR.push({x, y , w, h,speed})}
-  else{randomARR.push({x, y , w, h, secX, secY, secW, secH, speed});console.log(packagesArr[i].name)}
+  else{randomARR.push({x, y , w, h, /*secX, secY, secW, secH,*/ speed});console.log(packagesArr[i].name)}
 
 }
+
+function packagesOverlap(packageA, packageB) {
+  return (
+    packageA.x < packageB.x + packageB.w + 50 &&
+    packageA.x + packageA.w > packageB.x + 50 &&
+    packageA.y < packageB.y + packageB.h &&
+    packageA.y + packageA.h > packageB.y
+  );
+}
+
+function generateRandomString() {
+  // let length = maxLength/12; 
+  let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; 
+  let result = "";
+  for (let i = 0; i < 3; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  stringArr.push(result);
+}
+
