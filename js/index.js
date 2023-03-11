@@ -6,81 +6,20 @@ let y
 let w
 let h
 let randomArrW = 0 
-let randomText = ""
-let stringArr = []
+let loadedPackage = []
+let typedText =""
+let insideW
+let insideX
+let leftW
+let leftH
+let messageVisible = false;
+// let stringArr = []
+// let randomText = ""
 
-const packages = [
-  {
-    name: "small square",
-    x: 0,
-    y: 0,
-    w:50,
-    h:50
-  },
-  {
-    name: "big square",
-    x: 0,
-    y: 0,
-    w:200,
-    h:200
-  },
-  {
-    name: "long rec horizontal",
-    x: 0,
-    y: 0,
-    w:200,
-    h:50
-  },
-  {
-    name: "long rec vertical",
-    x: 0,
-    y: 0,
-    w:50,
-    h:200
-  },
-  {
-    name: "short rect horizontal",
-    x: 0,
-    y: 0,
-    w:100,
-    h:50
-  },
-  {
-    name: "short rec vertical",
-    x: 0,
-    y: 0,
-    w: 50,
-    h: 100
-  },
-  // {
-  //   name: "L shape",
-  //   x: 0,
-  //   y: 0,
-  //   w: 50,
-  //   h: 100,
-  //   secX:  + 50,
-  //   secY:  + 50,
-  //   secW: 50,
-  //   secH: 50
-  // },
-  // {
-  //   name: "L shape reverse",
-  //   x: 0,
-  //   y: 0,
-  //   w: 50,
-  //   h: 100,
-  //   secX:  - 50,
-  //   secY:  + 50,
-  //   secW: 50,
-  //   secH: 50
-  // },
-  
-  
-]
 
 setInterval(() => {
   randomPackage(packages);
-
+  organizePackage()
 }, 5000); 
 
 
@@ -105,20 +44,20 @@ function setup() {
     //reels
     fill(50);
     strokeWeight(1);
-    ellipse(1150 - transporterW, 425, 150, 150);
-    ellipse(1150, 425, 150, 150);
+    ellipse(1150 - transporterW, 325, 150, 150);
+    ellipse(1150, 325, 150, 150);
     //transporter
    
     fill(150);
     strokeWeight(1)
-    rect(transporterX, 30, transporterW, 425);
+    rect(transporterX, 30, transporterW, 325);
 
-    let insideW = 600;
-    let insideX = (width / 2) - (insideW / 2);
+    insideW = 600;
+    insideX = (width / 2) - (insideW / 2);
 
     fill(125);
     strokeWeight(1)
-    rect(insideX, 42.5, insideW, 400);
+    rect(insideX, 42.5, insideW, 300);
 
     fill(150);
     strokeWeight(1)
@@ -126,7 +65,7 @@ function setup() {
 
     fill(350);
     strokeWeight(1)
-    quad(windowWidth, 400,transporterX + transporterW, 455, transporterX + transporterW, 30, windowWidth , 0);
+    quad(windowWidth, 300,transporterX + transporterW, 355, transporterX + transporterW, 30, windowWidth , 0);
 
 
     //belt
@@ -148,17 +87,7 @@ function setup() {
       fill(150);
     }
 
-    //make package stop
-    for (let i = 0; i < randomARR.length; i++) {
-      for (let j = i + 1; j < randomARR.length; j++) {
-        const packageA = randomARR[i];
-        const packageB = randomARR[j];
-        if (packagesOverlap(packageA, packageB)) {
-          packageA.speed = 0;
-          packageB.speed = 0;
-        }
-      }
-    }
+
 
     //draw packages
     randomARR.forEach((package,i)=>{
@@ -178,12 +107,13 @@ function setup() {
       //sticker 
       stroke(300)
       fill(300)
-      rect(package.x + 15,package.y + 20, package.w - 20, 15)
+      rect(package.x + 15,package.y + 20, 30, 15)
 
       //text in sticker
+      strokeWeight(0)
       fill(0);
       textSize(12);
-      text(stringArr[i], package.x + 20, package.y + 30);
+      text(package.text, package.x + 20, package.y + 30);
 
 
       // fill(0)
@@ -208,11 +138,32 @@ function setup() {
       package.x += package.speed
       package.secX += package.speed
       
-      if (package.x + package.w >width - 20) {
+      //make package stop
+
+      if (package.x + package.w > width - 20) {
       package.speed = 0;
       }
 
+    for (let i = 0; i < randomARR.length; i++) {
+      for (let j = i + 1; j < randomARR.length; j++) {
+        const packageA = randomARR[i];
+        const packageB = randomARR[j];
+        if (packagesOverlap(packageA, packageB)) {
+          packageA.speed = 0;
+          packageB.speed = 0;
+        }
+      }
+    }
+
       
+          // check if player typed the correct character
+    // if (typedChar === packages[i].stickerText) {
+    //   packages.splice(i, 1);
+    //   spawnPackage();
+    //   score++;
+    //   typedChar = '';
+    // }
+  
     
 
     
@@ -222,7 +173,50 @@ function setup() {
       //   package.x = 0;
       // }
     })
+    //draw loaded packages
+    loadedPackage.forEach((package)=>{
+      // package.y = height - package.h - 75
+      // package.secY = height - package.secH - 75
+      // if(package.secH == undefined){
+      //box      
+      stroke(100);
+      strokeWeight(10);
+      fill(100)
+      rect(package[0].x, package[0].y, package[0].w, package[0].h) 
+      //tape
+      stroke(250);
+      strokeWeight(10);
+      drawTape(package[0].x,package[0].y,package[0].w,package[0].h)
+     
+      //sticker 
+      stroke(300)
+      fill(300)
+      rect(package[0].x + 15,package[0].y + 20, 30, 15)
 
+      //text in sticker
+      strokeWeight(0)
+      fill(0);
+      textSize(12);
+      text(package[0].text, package[0].x + 20, package[0].y + 30);})
+
+      //typedText
+      strokeWeight(0)
+        fill(0);
+        textSize(100);
+        text(typedText, 200, 200)
+
+      //Warntext
+      if(messageVisible === true){
+        strokeWeight(0)
+        fill(0);
+        textSize(100);
+        text("This package is too big", (width / 2) - (insideW / 2), 200);
+        setInterval(() => {
+          messageVisible = false
+        }, 1500);
+      }
+      
+  
   }
 
   // randomARR.forEach((package)=>{
@@ -233,42 +227,19 @@ function setup() {
   //   }
   //   })
 
+  function keyPressed() {
+    if (keyCode === BACKSPACE) {
+      typedText = typedText.slice(0, -1);
+    }
+    if (keyCode >= 65 && keyCode <= 90) {if(typedText.length >=3){typedText = ""}
+    else{typedText += key
+      console.log(typedText)}
+    if (typedText.length === 3){
+      loadPackage(typedText,randomARR)
+    } }
 
-   
-    //small square
-    // fill(500);
-    // rect(x, y, 50 ,50);
 
-    //big square
-    // fill(500);
-    // rect(x, y, 200 ,200);
-
-    // long rec horizontal
-    // fill(500);
-    // rect(x ,y, 200, 50)
-
-    //long rec vertical
-    // fill(500);
-    // rect(x, y, 50, 200)
-
-    //short rect horizontal
-    // fill(500);
-    // rect(x ,y, 100, 50)
-
-    //short rec vertical
-    // fill(500);
-    // rect(x, y, 50, 100)
-
-    // L shape
-    // fill(500);
-    // rect(x, y, 50, 100);
-    // rect(x + 50, y + 50, 50, 50);
-
-    // L shape flip
-    // fill(500);
-    // rect(x, 0, 50, 100);
-    // rect(x - 50, y + 50, 50, 50);
-
+  }
 
   function moveBelt() {
     beltX += beltSpeed; 
@@ -278,7 +249,6 @@ function setup() {
   }
 
 
-//capacity 2400
 
 function drawTape(x,y,w,h){
   //L shap no 
@@ -289,15 +259,11 @@ function drawSticker(x,y,w,h){
   return rect(x + random(0, w - 20),y + random(0, h - 20), 15, 15)
 
 }
-function randomSticker(){
-  return rotate(PI / random(30,50));
-}
-
 
 
 
 function randomPackage(packagesArr){
-  let i = Math.floor(Math.random() * 6)
+  let i = Math.floor(Math.random() * 3)
   let x = packagesArr[i].x
   let y = packagesArr[i].y
   let w = packagesArr[i].w
@@ -308,9 +274,14 @@ function randomPackage(packagesArr){
   // let secW = packagesArr[i].secW
   // let secH = packagesArr[i].secH
   let speed = 13
-  packagesArr.forEach(()=>{ generateRandomString(w - 40)})
- 
-  if(i < 6){randomARR.push({x, y , w, h,speed})}
+
+  let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; 
+  let text = "";
+  for (let i = 0; i < 3; i++) {
+        text += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+  // packagesArr.forEach(()=>{ generateRandomString(w)})
+  if(i < 6){randomARR.push({x, y , w, h,speed,text})}
   else{randomARR.push({x, y , w, h, /*secX, secY, secW, secH,*/ speed});console.log(packagesArr[i].name)}
 
 }
@@ -324,13 +295,82 @@ function packagesOverlap(packageA, packageB) {
   );
 }
 
-function generateRandomString() {
-  // let length = maxLength/12; 
-  let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; 
-  let result = "";
-  for (let i = 0; i < 3; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
+// function generateRandomString(packageLength) {
+//   console.log(packageLength)
+//   let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; 
+//   let result = "";
+//   for (let i = 0; i < 3; i++) {
+//         result += chars.charAt(Math.floor(Math.random() * chars.length));}
+
+//   //generate different length
+//   // if(packageLength <= 50){
+//   //   for (let i = 0; i < 3; i++) {
+//   //     result += chars.charAt(Math.floor(Math.random() * chars.length));
+//   //     console.log("the 1",packageLength)
+//   //   }
+//   // }else if(packageLength <= 100){
+//   //   for (let i = 0; i < 6; i++) {
+//   //     result += chars.charAt(Math.floor(Math.random() * chars.length));
+//   //     console.log("the 2",packageLength)
+//   //   }
+//   // }else if(packageLength <= 200){
+//   //   for (let i = 0; i < 9; i++) {
+//   //     result += chars.charAt(Math.floor(Math.random() * chars.length));
+//   //     console.log("the 3",packageLength)
+//   //   }
+//   // }
+  
+//   stringArr.push(result);
+// }
+
+function loadPackage(input, packagesOnBelt){
+  
+  for (let i = 0; i < packagesOnBelt.length; i++){
+    if(packagesOnBelt[i].text == input){
+      if(packagesOnBelt[i].w > leftW && leftW !== 0){
+          messageVisible = true;
+      }else{ loadedPackage.push(packagesOnBelt.splice(i, 1))
+        for(let j = 0; j < packagesOnBelt.length;j++){
+          if( j >= i){
+            packagesOnBelt[j].speed = 13;
+            console.log("remove",i)
+            console.log("these should move:", j)
+          }
+        }}
+        organizePackage(loadedPackage)
+     
   }
-  stringArr.push(result);
+  console.log(packagesOnBelt[i].text, input)
+  
+  }
 }
 
+function organizePackage(){
+  leftW = insideW
+  leftH = 0
+  
+     for(let i = 0; i < loadedPackage.length; i++){
+      if(leftW === 0){
+        leftW = insideW
+        leftH += 50
+      }
+      if (loadedPackage[i][0].w <= leftW){
+        loadedPackage[i][0].x = insideX + insideW - leftW
+        leftW -= loadedPackage[i][0].w
+        loadedPackage[i][0].y = 42.5 + 300 - 50 - leftH
+      }
+      if(leftH === 300){
+    loadPackage = []
+    }
+    }
+
+    //   loadedPackage[i][0].x = insideX + insideW - leftW
+    // leftW -= loadedPackage[i][0].w
+    // loadedPackage[i][0].y = 42.5 + 400 - leftH
+    // leftH += loadedPackage[i][0].h
+    console.log()
+  }
+ 
+
+
+// rect(insideX, 42.5, insideW, 400);
