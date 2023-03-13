@@ -13,14 +13,16 @@ let insideX
 let leftW
 let leftH
 let messageVisible = false;
+let gameState = 0;
+let button;
 // let stringArr = []
 // let randomText = ""
 
 
-setInterval(() => {
+setInterval(() => {if(gameState === 1){
   randomPackage(packages);
-  organizePackage()
-}, 5000); 
+  organizePackage()}
+}, 2000); 
 
 
 function preload() {
@@ -30,6 +32,9 @@ function preload() {
 
 function setup() {
     createCanvas(windowWidth-5, windowHeight-5);
+    button = createButton('Start Game');
+    button.position(width / 2 - button.width / 2 - 10, height / 2);
+    button.mousePressed(startGame);
     setInterval(moveBelt, 10);
     
   }
@@ -41,6 +46,20 @@ function setup() {
 
 
   function draw() {
+    if (gameState === 0){
+      image(bgImg,0,-50, width, height, 0, 0, bgImg.width, bgImg.height, COVER , LEFT)
+
+      noStroke()
+      fill(255,255,255,225)
+      rect(width / 2 - 200, height / 2  - 150, 400 , 200)
+
+    fill(100);
+    textAlign(CENTER);
+    textSize(32);
+    text('Welcome to the Game', width / 2, height / 2 - 40);
+    button.show();
+    }else if(gameState === 1){
+    
     image(bgImg,0,-50, width, height, 0, 0, bgImg.width, bgImg.height, COVER , LEFT);
     let transporterW = 625;
     let transporterX = (width / 2) - (transporterW / 2);
@@ -121,7 +140,7 @@ function setup() {
       strokeWeight(0)
       fill(0);
       textSize(12);
-      text(package.text, package.x + 20, package.y + 30);
+      text(package.text, package.x + 30, package.y + 30);
 
 
       // fill(0)
@@ -163,6 +182,11 @@ function setup() {
       }
     }
 
+    //set game over condition
+   if(package.speed === 0 && package.x <= 20 ){
+    gameOver();
+    console.log("game over")
+   }
       
           // check if player typed the correct character
     // if (typedChar === packages[i].stickerText) {
@@ -205,7 +229,7 @@ function setup() {
       strokeWeight(0)
       fill(0);
       textSize(12);
-      text(package[0].text, package[0].x + 20, package[0].y + 30);})
+      text(package[0].text, package[0].x + 30, package[0].y + 30);})
 
       //typedText
       strokeWeight(0)
@@ -222,11 +246,32 @@ function setup() {
         setInterval(() => {
           messageVisible = false
         }, 1500);
+
       }
-      
+    }else if(gameState === 2){
+    
+    fill(0, 0, 0, 1)
+    rect( width / 2 - 100, height / 2  - 150, 400 , 200)
+
+    fill(10);
+    textAlign(CENTER);
+    textSize(32);
+    text('Game Over', width / 2, height / 2 - 40);
+    button.show();
+    }
   
   }
 
+  function startGame() {
+    gameState = 1;
+    button.hide();
+  }
+  
+  function gameOver() {
+    gameState = 2;
+    button.show();
+    button.mousePressed(startGame);
+  }
   // randomARR.forEach((package)=>{
   //   console.log("package",package.w)
   //   console.log("Arr",randomArrW)
