@@ -23,10 +23,15 @@ setInterval(() => {
 }, 5000); 
 
 
+function preload() {
+  // bgImg = loadImage('https://t3.ftcdn.net/jpg/00/88/98/18/360_F_88981880_YjJManMJ6hJmKr5CZteFJAkEzXIh8mxW.jpg');
+  bgImg = loadImage("/img/background.png")
+}
 
 function setup() {
     createCanvas(windowWidth-5, windowHeight-5);
     setInterval(moveBelt, 10);
+    
   }
   
   function windowResized() {
@@ -36,36 +41,38 @@ function setup() {
 
 
   function draw() {
-    background(200);
-
-
+    image(bgImg,0,-50, width, height, 0, 0, bgImg.width, bgImg.height, COVER , LEFT);
     let transporterW = 625;
     let transporterX = (width / 2) - (transporterW / 2);
     //reels
     fill(50);
-    strokeWeight(1);
-    ellipse(1150 - transporterW, 325, 150, 150);
-    ellipse(1150, 325, 150, 150);
+    noStroke()
+    ellipse(transporterX + 200, height - 600 + 325, 150, 150);
+    ellipse(transporterX + transporterW +100, height - 600 + 325, 150, 150);
     //transporter
    
-    fill(150);
-    strokeWeight(1)
-    rect(transporterX, 30, transporterW, 325);
+    fill(254,204,0);
+    strokeWeight(3)
+    stroke(211,181,9)
+    rect(transporterX, height - 600 + 30 , transporterW, 325);
 
     insideW = 600;
     insideX = (width / 2) - (insideW / 2);
 
-    fill(125);
-    strokeWeight(1)
-    rect(insideX, 42.5, insideW, 300);
+    fill(250);
+    strokeWeight(3)
+    stroke(211,181,9)
+    rect(insideX, height - 600 + 42.5, insideW, 300);
 
-    fill(150);
-    strokeWeight(1)
-    quad(windowWidth - transporterW + 100, 0,transporterX, 30, transporterX + transporterW, 30, windowWidth , 0);
+    fill(254,204,0);
+    strokeWeight(3)
+    stroke(211,181,9)
+    quad(windowWidth - transporterW + 300, height - 600,transporterX, height - 600 + 30, transporterX + transporterW, height - 600 + 30, windowWidth , height - 600);
 
-    fill(350);
-    strokeWeight(1)
-    quad(windowWidth, 300,transporterX + transporterW, 355, transporterX + transporterW, 30, windowWidth , 0);
+    fill(254,204,0);
+    strokeWeight(3)
+    stroke(211,181,9)
+    quad(windowWidth, 300 + height - 600,transporterX + transporterW,height - 600 + 355, transporterX + transporterW, height - 600 + 30 , windowWidth , height - 600);
 
 
     //belt
@@ -95,18 +102,19 @@ function setup() {
       // package.secY = height - package.secH - 75
       // if(package.secH == undefined){
       //box      
-      stroke(100);
-      strokeWeight(10);
-      fill(100)
+      // stroke(184,136,91);
+      // strokeWeight(10);
+      noStroke()
+      fill(184,136,91)
       rect(package.x, package.y, package.w, package.h) 
       //tape
-      stroke(250);
+      stroke(161,115,76);
       strokeWeight(10);
-      drawTape(package.x,package.y,package.w,package.h)
+      drawTape(package.x + 5,package.y+5,package.w - 10,package.h-10)
      
       //sticker 
-      stroke(300)
-      fill(300)
+      stroke(229,226,228)
+      fill(229,226,228)
       rect(package.x + 15,package.y + 20, 30, 15)
 
       //text in sticker
@@ -179,18 +187,18 @@ function setup() {
       // package.secY = height - package.secH - 75
       // if(package.secH == undefined){
       //box      
-      stroke(100);
-      strokeWeight(10);
-      fill(100)
+      stroke(161,115,76);
+      strokeWeight(1);
+      fill(184,136,91)
       rect(package[0].x, package[0].y, package[0].w, package[0].h) 
       //tape
-      stroke(250);
+      stroke(161,115,76);
       strokeWeight(10);
-      drawTape(package[0].x,package[0].y,package[0].w,package[0].h)
+      drawTape(package[0].x + 5,package[0].y + 5 ,package[0].w - 10,package[0].h - 10)
      
       //sticker 
-      stroke(300)
-      fill(300)
+      stroke(229,226,228)
+      fill(229,226,228)
       rect(package[0].x + 15,package[0].y + 20, 30, 15)
 
       //text in sticker
@@ -203,7 +211,7 @@ function setup() {
       strokeWeight(0)
         fill(0);
         textSize(100);
-        text(typedText, 200, 200)
+        text(typedText, 100, 300)
 
       //Warntext
       if(messageVisible === true){
@@ -357,7 +365,7 @@ function organizePackage(){
       if (loadedPackage[i][0].w <= leftW){
         loadedPackage[i][0].x = insideX + insideW - leftW
         leftW -= loadedPackage[i][0].w
-        loadedPackage[i][0].y = 42.5 + 300 - 50 - leftH
+        loadedPackage[i][0].y = height - 600 + 42.5 + 300 - 50 - leftH
       }
       if(leftH === 300){
     loadPackage = []
