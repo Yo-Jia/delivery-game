@@ -27,7 +27,7 @@ setInterval(() => {if(gameState === 1){
 
 function preload() {
   // bgImg = loadImage('https://t3.ftcdn.net/jpg/00/88/98/18/360_F_88981880_YjJManMJ6hJmKr5CZteFJAkEzXIh8mxW.jpg');
-  bgImg = loadImage("/img/background.png")
+  bgImg = loadImage("img/background.png")
 }
 
 function setup() {
