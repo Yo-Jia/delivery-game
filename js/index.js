@@ -1,4 +1,4 @@
-let beltSpeed = 2; 
+let beltSpeed = 2.5; 
 let beltX = 0;
 let randomARR = [];
 let x
@@ -15,6 +15,10 @@ let leftH
 let messageVisible = false;
 let gameState = 0;
 let button;
+let restartButton;
+let score = 0
+let messageLevelUp = false;
+let level = 500
 // let stringArr = []
 // let randomText = ""
 
@@ -22,19 +26,42 @@ let button;
 setInterval(() => {if(gameState === 1){
   randomPackage(packages);
   organizePackage()}
-}, 2000); 
+}, 3500 - level); 
 
 
 function preload() {
   // bgImg = loadImage('https://t3.ftcdn.net/jpg/00/88/98/18/360_F_88981880_YjJManMJ6hJmKr5CZteFJAkEzXIh8mxW.jpg');
-  bgImg = loadImage("img/background.png")
+  bgImg = loadImage("/img/background.png")
 }
 
 function setup() {
     createCanvas(windowWidth-5, windowHeight-5);
     button = createButton('Start Game');
-    button.position(width / 2 - button.width / 2 - 10, height / 2);
+    button.position(width / 2 - button.width / 2 - 60 , height / 2 + 70);
     button.mousePressed(startGame);
+    button.mouseOver(hover);
+    button.mouseOut(endHover);
+    button.style('font-size', '30px');
+    button.style('font-weight', 'bold')
+    button.style('color', color(213,0,41));
+    button.style('background-color', color(254,204,0));
+    button.style('border', 0);
+    button.style('padding', "10px");
+    button.style('box-shadow', "3px 4px #888888");
+
+
+    restartButton = createButton('Restart Game');
+    restartButton.position(width / 2 - restartButton.width / 2 , height / 2 + 40);
+    restartButton.mousePressed(restartGame);
+    restartButton.mouseOver(hover);
+    restartButton.mouseOut(endHover);
+    restartButton.style('font-size', '30px');
+    restartButton.style('font-weight', 'bold')
+    restartButton.style('color', color(213,0,41));
+    restartButton.style('background-color', color(254,204,0));
+    restartButton.style('border', 0);
+    restartButton.style('padding', "10px");
+    restartButton.style('box-shadow', "3px 4px #888888");
     setInterval(moveBelt, 10);
     
   }
@@ -51,18 +78,54 @@ function setup() {
 
       noStroke()
       fill(255,255,255,225)
-      rect(width / 2 - 200, height / 2  - 150, 400 , 200)
+      rect(width / 2 - 325, height / 2 - 250, 650 , 400)
 
-    fill(100);
+    fill(213,0,41);
     textAlign(CENTER);
     textSize(32);
-    text('Welcome to the Game', width / 2, height / 2 - 40);
+    textStyle(BOLD)
+    text('Welcome to Delivery Man', width / 2, height / 2 - 190);
+
+    let line1 = "Type in the characters on packages to load them onto a truck.";
+    fill(50);
+    textAlign(CENTER);
+    textSize(20);
+    text(line1,  width / 2 - 300, height / 2 - 150 , 600, 400); 
+
+    let line2 = "Don't let the conveyor belt get too full, or it's game over!";
+
+    fill(50);
+    textAlign(CENTER);
+    textSize(20);
+    text(line2,  width / 2 - 300, height / 2 - 110 , 600, 400); 
+
+    let line3 = "Use UPPERCASE letters only";
+
+    fill(50);
+    textAlign(CENTER);
+    textSize(20);
+    text(line3,  width / 2 - 300, height / 2 - 70 ,600, 400); 
+
+    let line4 = "Are you ready to become the ultimate delivery man?";
+    fill(50);
+    textAlign(CENTER);
+    textSize(22);
+    text(line4,  width / 2 - 300, height / 2  , 600, 400); 
+
+
     button.show();
+    restartButton.hide()
     }else if(gameState === 1){
     
     image(bgImg,0,-50, width, height, 0, 0, bgImg.width, bgImg.height, COVER , LEFT);
     let transporterW = 625;
     let transporterX = (width / 2) - (transporterW / 2);
+    
+    //score
+    fill(50);
+    textSize(30);
+    text(`score: ${score}`, 100,50); 
+
     //reels
     fill(50);
     noStroke()
@@ -175,10 +238,12 @@ function setup() {
       for (let j = i + 1; j < randomARR.length; j++) {
         const packageA = randomARR[i];
         const packageB = randomARR[j];
-        if (packagesOverlap(packageA, packageB)) {
+        if(packageA.speed === 0){  
+          if (packagesOverlap(packageA, packageB)) {
           packageA.speed = 0;
           packageB.speed = 0;
-        }
+        }}
+      
       }
     }
 
@@ -210,7 +275,8 @@ function setup() {
       // package.y = height - package.h - 75
       // package.secY = height - package.secH - 75
       // if(package.secH == undefined){
-      //box      
+      //box
+      
       stroke(161,115,76);
       strokeWeight(1);
       fill(184,136,91)
@@ -232,33 +298,58 @@ function setup() {
       text(package[0].text, package[0].x + 30, package[0].y + 30);})
 
       //typedText
-      strokeWeight(0)
+        strokeWeight(0)
         fill(0);
         textSize(100);
-        text(typedText, 100, 300)
+        text(typedText, 150, 300)
 
       //Warntext
       if(messageVisible === true){
         strokeWeight(0)
         fill(0);
-        textSize(100);
-        text("This package is too big", (width / 2) - (insideW / 2), 200);
+        textSize(50);
+        text("This package is too big", (width / 2) - (insideW / 2)+300, 200);
         setInterval(() => {
           messageVisible = false
-        }, 1500);
+        }, 1500);}
+      //level up message  
+        if(messageLevelUp === true){
+          strokeWeight(0)
+          fill(0);
+          textSize(50);
+          text("You rock it! Let's work faster!", (width / 2) - (insideW / 2)+300, 200);
+          setInterval(() => {
+            messageLevelUp = false
+          }, 1500);}
 
-      }
+        restartButton.hide()
+
+        if(leftH === 250 && leftW === 0){
+          leftW = insideW
+          leftH = 0
+          loadedPackage = []
+          messageLevelUp = true;
+          level += 500
+       }
+      
     }else if(gameState === 2){
     
-    fill(0, 0, 0, 1)
-    rect( width / 2 - 100, height / 2  - 150, 400 , 200)
+      noStroke()
+      fill(255,255,255,100)
+      rect(width / 2 - 325, height / 2 - 250, 650 , 400)
 
     fill(10);
     textAlign(CENTER);
     textSize(32);
-    text('Game Over', width / 2, height / 2 - 40);
-    button.show();
+    text('Game Over',  width / 2 - 280, height / 2 - 70 ,600, 400);
+
+    
+
+    restartButton.show()
+
     }
+
+    
   
   }
 
@@ -266,11 +357,19 @@ function setup() {
     gameState = 1;
     button.hide();
   }
+
+  function restartGame() {
+    gameState = 1;
+    restartButton.hide();
+    button.hide()
+    randomARR = []
+    loadedPackage = []
+    typedText =""
+    score = 0
+  }
   
   function gameOver() {
     gameState = 2;
-    button.show();
-    button.mousePressed(startGame);
   }
   // randomARR.forEach((package)=>{
   //   console.log("package",package.w)
@@ -289,6 +388,7 @@ function setup() {
       console.log(typedText)}
     if (typedText.length === 3){
       loadPackage(typedText,randomARR)
+      typedText = ""
     } }
 
 
@@ -326,7 +426,7 @@ function randomPackage(packagesArr){
   // let secY = packagesArr[i].secY
   // let secW = packagesArr[i].secW
   // let secH = packagesArr[i].secH
-  let speed = 13
+  let speed = 4
 
   let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; 
   let text = "";
@@ -342,9 +442,7 @@ function randomPackage(packagesArr){
 function packagesOverlap(packageA, packageB) {
   return (
     packageA.x < packageB.x + packageB.w + 50 &&
-    packageA.x + packageA.w > packageB.x + 50 &&
-    packageA.y < packageB.y + packageB.h &&
-    packageA.y + packageA.h > packageB.y
+    packageA.x + packageA.w > packageB.x + 50
   );
 }
 
@@ -379,15 +477,15 @@ function packagesOverlap(packageA, packageB) {
 function loadPackage(input, packagesOnBelt){
   
   for (let i = 0; i < packagesOnBelt.length; i++){
-    if(packagesOnBelt[i].text == input){
+    if(packagesOnBelt[i].text == input){      
       if(packagesOnBelt[i].w > leftW && leftW !== 0){
           messageVisible = true;
-      }else{ loadedPackage.push(packagesOnBelt.splice(i, 1))
+      }else{   
+        score += 1
+        loadedPackage.push(packagesOnBelt.splice(i, 1))
         for(let j = 0; j < packagesOnBelt.length;j++){
           if( j >= i){
-            packagesOnBelt[j].speed = 13;
-            console.log("remove",i)
-            console.log("these should move:", j)
+            packagesOnBelt[j].speed = 3.15;
           }
         }}
         organizePackage(loadedPackage)
@@ -401,7 +499,6 @@ function loadPackage(input, packagesOnBelt){
 function organizePackage(){
   leftW = insideW
   leftH = 0
-  
      for(let i = 0; i < loadedPackage.length; i++){
       if(leftW === 0){
         leftW = insideW
@@ -412,9 +509,7 @@ function organizePackage(){
         leftW -= loadedPackage[i][0].w
         loadedPackage[i][0].y = height - 600 + 42.5 + 300 - 50 - leftH
       }
-      if(leftH === 300){
-    loadPackage = []
-    }
+
     }
 
     //   loadedPackage[i][0].x = insideX + insideW - leftW
@@ -427,3 +522,15 @@ function organizePackage(){
 
 
 // rect(insideX, 42.5, insideW, 400);
+function hover(){
+  button.position(width / 2 - button.width / 2 - 60 +3, height / 2 + 70+4);
+  button.style('box-shadow', "0px 0px #888888");
+  restartButton.position(width / 2 - button.width / 2 - 60 +3, height / 2 + 70+4);
+  restartButton.style('box-shadow', "0px 0px #888888");
+}
+function endHover(){
+  button.position(width / 2 - button.width / 2 - 60, height / 2 + 70)
+  button.style('box-shadow', "3px 4px #888888");
+  restartButton.position(width / 2 - button.width / 2 - 60 , height / 2 + 70);
+  restartButton.style('box-shadow', "3px 4px #888888");
+;}
