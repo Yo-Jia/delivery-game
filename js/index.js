@@ -18,7 +18,8 @@ let button;
 let restartButton;
 let score = 0
 let messageLevelUp = false;
-let level = 500
+let level = 2500
+let song;
 // let stringArr = []
 // let randomText = ""
 
@@ -26,12 +27,14 @@ let level = 500
 setInterval(() => {if(gameState === 1){
   randomPackage(packages);
   organizePackage()}
-}, 3500 - level); 
+}, level); 
 
 
 function preload() {
   // bgImg = loadImage('https://t3.ftcdn.net/jpg/00/88/98/18/360_F_88981880_YjJManMJ6hJmKr5CZteFJAkEzXIh8mxW.jpg');
-  bgImg = loadImage("img/background.png")
+  bgImg = loadImage("/img/background.png")
+  song = createAudio("/music.mp3")
+
 }
 
 function setup() {
@@ -116,7 +119,7 @@ function setup() {
     button.show();
     restartButton.hide()
     }else if(gameState === 1){
-    
+
     image(bgImg,0,-50, width, height, 0, 0, bgImg.width, bgImg.height, COVER , LEFT);
     let transporterW = 625;
     let transporterX = (width / 2) - (transporterW / 2);
@@ -314,6 +317,8 @@ function setup() {
         }, 1500);}
       //level up message  
         if(messageLevelUp === true){
+          level = level * 0.8
+          console.log(level)
           strokeWeight(0)
           fill(0);
           textSize(50);
@@ -329,11 +334,9 @@ function setup() {
           leftH = 0
           loadedPackage = []
           messageLevelUp = true;
-          level += 500
        }
       
     }else if(gameState === 2){
-    
       noStroke()
       fill(255,255,255,100)
       rect(width / 2 - 325, height / 2 - 250, 650 , 400)
@@ -356,6 +359,8 @@ function setup() {
   function startGame() {
     gameState = 1;
     button.hide();
+    song.play()
+    song.loop()
   }
 
   function restartGame() {
@@ -366,10 +371,14 @@ function setup() {
     loadedPackage = []
     typedText =""
     score = 0
+    song.play()
+    song.loop()
+    level = 2500;
   }
   
   function gameOver() {
     gameState = 2;
+    song.stop()
   }
   // randomARR.forEach((package)=>{
   //   console.log("package",package.w)
@@ -378,6 +387,7 @@ function setup() {
   //     randomArrW += package.w
   //   }
   //   })
+
 
   function keyPressed() {
     if (keyCode === BACKSPACE) {
