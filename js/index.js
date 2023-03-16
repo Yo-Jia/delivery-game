@@ -82,7 +82,7 @@ function setup() {
 
   function draw() {
     if (gameState === 0){
-      image(bgImg,0,-50, width, height, 0, 0, bgImg.width, bgImg.height, COVER , LEFT)
+      image(bgImg,0,0, width, height, 0, 0, bgImg.width, bgImg.height, COVER , LEFT)
 
       noStroke()
       fill(255,255,255,225)
@@ -126,25 +126,23 @@ function setup() {
     }else if(gameState === 1){
 
     image(bgImg,0,-50, width, height, 0, 0, bgImg.width, bgImg.height, COVER , LEFT);
-    let transporterW = 625;
+
+    let transporterW = 680;
     let transporterX = (width / 2) - (transporterW / 2);
     
-    //score
-    fill(50);
-    textSize(30);
-    text(`score: ${score}`, 100,50); 
+  
 
     //reels
     fill(50);
     noStroke()
-    ellipse(transporterX + 200, height - 600 + 325, 150, 150);
-    ellipse(transporterX + transporterW +100, height - 600 + 325, 150, 150);
+    ellipse(transporterX + 200, height - 550 + 325, 150, 150);
+    ellipse(transporterX + transporterW +100, height - 550 + 325, 150, 150);
     //transporter
    
     fill(254,204,0);
     strokeWeight(3)
     stroke(211,181,9)
-    rect(transporterX, height - 600 + 30 , transporterW, 325);
+    rect(transporterX, height - 600 , transporterW, 380);
 
     insideW = 600;
     insideX = (width / 2) - (insideW / 2);
@@ -153,16 +151,26 @@ function setup() {
     strokeWeight(3)
     stroke(211,181,9)
     rect(insideX, height - 600 + 42.5, insideW, 300);
+    
+
+    // fill(254,204,0);
+    // strokeWeight(3)
+    // stroke(211,181,9)
+    // quad(transporterX - 250  , height - 600,transporterX, height - 600 + 30, transporterX , height - 600 + 355, transporterX - 250 , height - 600 + 355 - 40)
+
+    // fill(254,204,0);
+    // strokeWeight(3)
+    // stroke(211,181,9)
+    // quad(transporterW + transporterX + 250, height - 600 + 355 - 40,transporterX + transporterW,height - 600 + 355, transporterX + transporterW, height - 600 + 30 , transporterW + transporterX + 250 , height - 600);
+    fill(254,204,0);
+    strokeWeight(3)
+    stroke(211,181,9)
+    quad(windowWidth - transporterW + 300, height - 600 - 30,transporterX, height - 600, transporterX + transporterW, height - 600, windowWidth , height - 600-30);
 
     fill(254,204,0);
     strokeWeight(3)
     stroke(211,181,9)
-    quad(windowWidth - transporterW + 300, height - 600,transporterX, height - 600 + 30, transporterX + transporterW, height - 600 + 30, windowWidth , height - 600);
-
-    fill(254,204,0);
-    strokeWeight(3)
-    stroke(211,181,9)
-    quad(windowWidth, 300 + height - 600,transporterX + transporterW,height - 600 + 355, transporterX + transporterW, height - 600 + 30 , windowWidth , height - 600);
+    quad(windowWidth, 300 + height - 600,transporterX + transporterW,height - 600 + 355 +25, transporterX + transporterW, height - 600, windowWidth , height - 600-30);
 
 
     //belt
@@ -184,7 +192,10 @@ function setup() {
       fill(150);
     }
 
-
+  //score
+  fill(250);
+  textSize(30);
+  text(`score: ${score}`, 100,50); 
 
     //draw packages
     randomARR.forEach((package)=>{
@@ -312,10 +323,12 @@ function setup() {
 
     }else if(gameState === 2){
       noStroke()
-      fill(255,255,255,100)
+      fill(color(232,232,232,100))
       rect(width / 2 - 325, height / 2 - 250, 650 , 400)
 
-      fill(10);
+      // color', color(213,0,41));
+      // background-color', color(254,204,0));
+      fill(213,0,41);
       textAlign(CENTER);
       textSize(32);
       text('Game Over',  width / 2 - 280, height / 2 - 70 ,600, 400);
