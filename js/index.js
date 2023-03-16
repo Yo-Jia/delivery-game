@@ -20,6 +20,9 @@ let score = 0
 let messageLevelUp = false;
 let level = 2500
 let song;
+let errorSound;
+let gameOverSound;
+let loadedSound;
 // let stringArr = []
 // let randomText = ""
 
@@ -33,8 +36,10 @@ setInterval(() => {if(gameState === 1){
 function preload() {
   // bgImg = loadImage('https://t3.ftcdn.net/jpg/00/88/98/18/360_F_88981880_YjJManMJ6hJmKr5CZteFJAkEzXIh8mxW.jpg');
   bgImg = loadImage("img/background.png")
-  song = createAudio("music.mp3")
-
+  song = createAudio("sounds/music.mp3")
+  errorSound = createAudio("sounds/error.mp3")
+  gameOverSound = createAudio("sounds/game-over.mp3")
+  loadedSound = createAudio("sounds/loaded.mp3")
 }
 
 function setup() {
@@ -182,13 +187,9 @@ function setup() {
 
 
     //draw packages
-    randomARR.forEach((package,i)=>{
+    randomARR.forEach((package)=>{
       package.y = height - package.h - 75
-      // package.secY = height - package.secH - 75
-      // if(package.secH == undefined){
-      //box      
-      // stroke(184,136,91);
-      // strokeWeight(10);
+
       noStroke()
       fill(184,136,91)
       rect(package.x, package.y, package.w, package.h) 
@@ -209,25 +210,7 @@ function setup() {
       text(package.text, package.x + 30, package.y + 30);
 
 
-      // fill(0)
-      // textAlign(LEFT, TOP)
-      // text(text, package.x + 20, package.y + 22)
-
-
-      // }else{
-      // //L shape box
-      // stroke(100);
-      // fill(100)
-      // rect(package.x, package.y, package.w, package.h) 
-
-      // fill(100)
-      // rect(package.secX, package.secY, package.secW, package.secH)
-
-      // //sticker
-      // fill(100)
-      // rect(package.x + package.w - 15,package.y + package.h -15, 10, 10)
-
-      // }
+      //make package move
       package.x += package.speed
       package.secX += package.speed
       
@@ -237,15 +220,17 @@ function setup() {
       package.speed = 0;
       }
 
-    for (let i = 0; i < randomARR.length; i++) {
-      for (let j = i + 1; j < randomARR.length; j++) {
-        const packageA = randomARR[i];
-        const packageB = randomARR[j];
-        if(packageA.speed === 0){  
-          if (packagesOverlap(packageA, packageB)) {
-          packageA.speed = 0;
-          packageB.speed = 0;
-        }}
+      for (let i = 0; i < randomARR.length; i++) {
+        for (let j = i + 1; j < randomARR.length; j++) {
+          const packageA = randomARR[i];
+          const packageB = randomARR[j];
+          if(packageA.speed === 0){  
+            if (packagesOverlap(packageA, packageB)) {
+            packageA.speed = 0;
+            packageB.speed = 0;
+          }
+        }
+
       
       }
     }
@@ -256,29 +241,12 @@ function setup() {
     console.log("game over")
    }
       
-          // check if player typed the correct character
-    // if (typedChar === packages[i].stickerText) {
-    //   packages.splice(i, 1);
-    //   spawnPackage();
-    //   score++;
-    //   typedChar = '';
-    // }
-  
-    
 
-    
-      
-
-      // if (package.x -  package.w > windowWidth) {
-      //   package.x = 0;
-      // }
     })
+
+
     //draw loaded packages
     loadedPackage.forEach((package)=>{
-      // package.y = height - package.h - 75
-      // package.secY = height - package.secH - 75
-      // if(package.secH == undefined){
-      //box
       
       stroke(161,115,76);
       strokeWeight(1);
@@ -300,11 +268,32 @@ function setup() {
       textSize(12);
       text(package[0].text, package[0].x + 30, package[0].y + 30);})
 
+
       //typedText
+      strokeWeight(0)
+      fill(0);
+      textSize(100);
+      text(typedText, 150, 300)
+
+
+      if(leftH === 250 && leftW === 0){
+        level = level * 0.8
+        leftW = insideW
+        leftH = 0
+        loadedPackage = []
+        messageLevelUp = true;
+      }
+
+      //level up message  
+      if(messageLevelUp === true){
         strokeWeight(0)
         fill(0);
-        textSize(100);
-        text(typedText, 150, 300)
+        textSize(50);
+        text("You rock it! Let's work faster!", (width / 2) - (insideW / 2)+300, 200);
+        setTimeout(() => {
+          messageLevelUp = false
+        }, 1500);}
+
 
       //Warntext
       if(messageVisible === true){
@@ -312,43 +301,26 @@ function setup() {
         fill(0);
         textSize(50);
         text("This package is too big", (width / 2) - (insideW / 2)+300, 200);
-        setInterval(() => {
+
+        setTimeout(() => {
           messageVisible = false
-        }, 1500);}
-      //level up message  
-        if(messageLevelUp === true){
-          level = level * 0.8
-          console.log(level)
-          strokeWeight(0)
-          fill(0);
-          textSize(50);
-          text("You rock it! Let's work faster!", (width / 2) - (insideW / 2)+300, 200);
-          setInterval(() => {
-            messageLevelUp = false
-          }, 1500);}
+        }, 1500);
+      }
+      
 
         restartButton.hide()
 
-        if(leftH === 250 && leftW === 0){
-          leftW = insideW
-          leftH = 0
-          loadedPackage = []
-          messageLevelUp = true;
-       }
-      
     }else if(gameState === 2){
       noStroke()
       fill(255,255,255,100)
       rect(width / 2 - 325, height / 2 - 250, 650 , 400)
 
-    fill(10);
-    textAlign(CENTER);
-    textSize(32);
-    text('Game Over',  width / 2 - 280, height / 2 - 70 ,600, 400);
+      fill(10);
+      textAlign(CENTER);
+      textSize(32);
+      text('Game Over',  width / 2 - 280, height / 2 - 70 ,600, 400);
 
-    
-
-    restartButton.show()
+      restartButton.show()
 
     }
 
@@ -356,60 +328,54 @@ function setup() {
   
   }
 
-  function startGame() {
-    gameState = 1;
-    button.hide();
-    song.play()
-    song.loop()
+function startGame() {
+  gameState = 1;
+  button.hide();
+  song.play()
+  song.loop()
+}
+
+function restartGame() {
+  gameState = 1;
+  restartButton.hide();
+  button.hide()
+  randomARR = []
+  loadedPackage = []
+  typedText =""
+  score = 0
+  song.play()
+  song.loop()
+  level = 2500;
+}
+
+function gameOver() {
+  gameState = 2;
+  song.stop()
+  gameOverSound.play()  
+}
+
+
+function keyPressed() {
+  if (keyCode === BACKSPACE) {
+    typedText = typedText.slice(0, -1);
   }
+  if (keyCode >= 65 && keyCode <= 90) {if(typedText.length >=3){typedText = ""}
+  else{typedText += key
+    console.log(typedText)}
+  if (typedText.length === 3){
+    loadPackage(typedText,randomARR)
+    typedText = ""
+  } }
 
-  function restartGame() {
-    gameState = 1;
-    restartButton.hide();
-    button.hide()
-    randomARR = []
-    loadedPackage = []
-    typedText =""
-    score = 0
-    song.play()
-    song.loop()
-    level = 2500;
+
+}
+
+function moveBelt() {
+  beltX += beltSpeed; 
+  if (beltX >= 100) {
+    beltX = 0;
   }
-  
-  function gameOver() {
-    gameState = 2;
-    song.stop()
-  }
-  // randomARR.forEach((package)=>{
-  //   console.log("package",package.w)
-  //   console.log("Arr",randomArrW)
-  //   if(package.speed == 0){
-  //     randomArrW += package.w
-  //   }
-  //   })
-
-
-  function keyPressed() {
-    if (keyCode === BACKSPACE) {
-      typedText = typedText.slice(0, -1);
-    }
-    if (keyCode >= 65 && keyCode <= 90) {if(typedText.length >=3){typedText = ""}
-    else{typedText += key
-      console.log(typedText)}
-    if (typedText.length === 3){
-      loadPackage(typedText,randomARR)
-      typedText = ""
-    } }
-
-
-  }
-
-  function moveBelt() {
-    beltX += beltSpeed; 
-    if (beltX >= 100) {
-      beltX = 0;
-    }
-  }
+}
 
 
 
@@ -418,6 +384,7 @@ function drawTape(x,y,w,h){
   if(w >= h){line(x, y + h/2, x + w, y + h/2)}
   else{line(x + w / 2, y, x + w / 2, y + h)}
 }
+
 function drawSticker(x,y,w,h){
   return rect(x + random(0, w - 20),y + random(0, h - 20), 15, 15)
 
@@ -431,11 +398,7 @@ function randomPackage(packagesArr){
   let y = packagesArr[i].y
   let w = packagesArr[i].w
   let h = packagesArr[i].h
-  
-  // let secX = packagesArr[i].secX
-  // let secY = packagesArr[i].secY
-  // let secW = packagesArr[i].secW
-  // let secH = packagesArr[i].secH
+ 
   let speed = 4
 
   let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; 
@@ -443,9 +406,8 @@ function randomPackage(packagesArr){
   for (let i = 0; i < 3; i++) {
         text += chars.charAt(Math.floor(Math.random() * chars.length));
       }
-  // packagesArr.forEach(()=>{ generateRandomString(w)})
   if(i < 6){randomARR.push({x, y , w, h,speed,text})}
-  else{randomARR.push({x, y , w, h, /*secX, secY, secW, secH,*/ speed});console.log(packagesArr[i].name)}
+  else{randomARR.push({x, y , w, h, speed});console.log(packagesArr[i].name)}
 
 }
 
@@ -456,41 +418,15 @@ function packagesOverlap(packageA, packageB) {
   );
 }
 
-// function generateRandomString(packageLength) {
-//   console.log(packageLength)
-//   let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; 
-//   let result = "";
-//   for (let i = 0; i < 3; i++) {
-//         result += chars.charAt(Math.floor(Math.random() * chars.length));}
-
-//   //generate different length
-//   // if(packageLength <= 50){
-//   //   for (let i = 0; i < 3; i++) {
-//   //     result += chars.charAt(Math.floor(Math.random() * chars.length));
-//   //     console.log("the 1",packageLength)
-//   //   }
-//   // }else if(packageLength <= 100){
-//   //   for (let i = 0; i < 6; i++) {
-//   //     result += chars.charAt(Math.floor(Math.random() * chars.length));
-//   //     console.log("the 2",packageLength)
-//   //   }
-//   // }else if(packageLength <= 200){
-//   //   for (let i = 0; i < 9; i++) {
-//   //     result += chars.charAt(Math.floor(Math.random() * chars.length));
-//   //     console.log("the 3",packageLength)
-//   //   }
-//   // }
-  
-//   stringArr.push(result);
-// }
 
 function loadPackage(input, packagesOnBelt){
-  
   for (let i = 0; i < packagesOnBelt.length; i++){
     if(packagesOnBelt[i].text == input){      
       if(packagesOnBelt[i].w > leftW && leftW !== 0){
           messageVisible = true;
-      }else{   
+          errorSound.play()
+      }else{ 
+        loadedSound.play()
         score += 1
         loadedPackage.push(packagesOnBelt.splice(i, 1))
         for(let j = 0; j < packagesOnBelt.length;j++){
@@ -500,9 +436,7 @@ function loadPackage(input, packagesOnBelt){
         }}
         organizePackage(loadedPackage)
      
-  }
-  console.log(packagesOnBelt[i].text, input)
-  
+  }  
   }
 }
 
@@ -522,16 +456,11 @@ function organizePackage(){
 
     }
 
-    //   loadedPackage[i][0].x = insideX + insideW - leftW
-    // leftW -= loadedPackage[i][0].w
-    // loadedPackage[i][0].y = 42.5 + 400 - leftH
-    // leftH += loadedPackage[i][0].h
     console.log()
   }
  
 
 
-// rect(insideX, 42.5, insideW, 400);
 function hover(){
   button.position(width / 2 - button.width / 2 - 60 +3, height / 2 + 70+4);
   button.style('box-shadow', "0px 0px #888888");
