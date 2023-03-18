@@ -281,11 +281,13 @@ function setup() {
 
 
       //typedText
-      strokeWeight(0)
-      fill(0);
+      strokeWeight(10)
+      stroke(213,0,41)
+      fill(254,204,0);
       textSize(100);
-      text(typedText, 150, 300)
-
+      text(typedText, 150,height - 200)
+      // ('color', color(213,0,41));
+      // button.style('background-color', color(254,204,0));
 
       if(leftH === 250 && leftW === 0){
         level = level * 0.8
@@ -298,9 +300,9 @@ function setup() {
       //level up message  
       if(messageLevelUp === true){
         strokeWeight(0)
-        fill(0);
+        fill(213,0,41);
         textSize(50);
-        text("You rock it! Let's work faster!", (width / 2) - (insideW / 2)+300, 200);
+        text("You rock it! Let's work faster!", (width / 2) - (insideW / 2)+300, height - 400);
         setTimeout(() => {
           messageLevelUp = false
         }, 1500);}
@@ -309,9 +311,9 @@ function setup() {
       //Warntext
       if(messageVisible === true){
         strokeWeight(0)
-        fill(0);
+        fill(213,0,41);
         textSize(50);
-        text("This package is too big", (width / 2) - (insideW / 2)+300, 200);
+        text("This package is too big", (width / 2) - (insideW / 2)+300, height - 400);
 
         setTimeout(() => {
           messageVisible = false
@@ -449,8 +451,9 @@ function loadPackage(input, packagesOnBelt){
         }}
         organizePackage(loadedPackage)
      
-  }  
   }
+;
+}
 }
 
 function organizePackage(){
